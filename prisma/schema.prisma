@@ -19,7 +19,9 @@ model User {
   email     String    @unique
   password  String
   name      String?
-  annonces  Announcement[]
+  annonces           Announcement[]
+  blacklistedTokens  AccessToken[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -44,11 +46,13 @@ model Announcement {
 
 }
 
-model BlacklistedToken {
+model AccessToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
-  expiresAt DateTime
+  expiresAt DateTime?
 
   @@index([expiresAt])
 

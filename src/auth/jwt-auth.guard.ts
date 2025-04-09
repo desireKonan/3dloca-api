@@ -1,10 +1,10 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { TokenBlacklistService } from './token-blacklist.service';
+import { AccessTokenService } from './token-blacklist.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private tokenBlacklistService: TokenBlacklistService) {
+  constructor(private readonly tokenBlacklistService: AccessTokenService) {
     super();
   }
 
@@ -16,11 +16,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return false;
     }
 
-    const isBlacklisted = await this.tokenBlacklistService.isTokenBlacklisted(token);
+    const isBlacklisted = await this.tokenBlacklistService.tokenExists(token);
     if (isBlacklisted) {
-      return false;
+      return true;
     }
 
+    const user = await this.tokenBlacklistService.getUserByToken(token);
+    request.user = user;
+    
     return super.canActivate(context) as Promise<boolean>;
   }
 

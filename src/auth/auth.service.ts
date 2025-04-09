@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import { TokenBlacklistService } from './token-blacklist.service';
+import { AccessTokenService } from './token-blacklist.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private tokenBlacklistService: TokenBlacklistService,
+    private accessToken: AccessTokenService,
     private jwtService: JwtService,
   ) {}
 
@@ -26,7 +26,7 @@ export class AuthService {
 
     const access_token = this.jwtService.sign(payload);
 
-    const tokenCreated = await this.tokenBlacklistService.blacklistToken(access_token);
+    const tokenCreated = await this.accessToken.create(access_token, user.id);
     console.log("token created ========>>>", tokenCreated);
 
     return {

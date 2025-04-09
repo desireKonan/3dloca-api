@@ -13,16 +13,7 @@ export class AnnouncementsService {
       data: {
         ...createAnnouncementDto,
         userId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-          },
-        },
-      },
+      }
     });
   }
 

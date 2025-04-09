@@ -1,13 +1,13 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { TokenBlacklistService } from './token-blacklist.service';
+import { AccessTokenService } from './token-blacklist.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private tokenBlacklistService: TokenBlacklistService,
+    private tokenBlacklistService: AccessTokenService,
   ) {}
 
   @Post('login')
@@ -24,7 +24,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async logout(@Req() req: any) {
     const token = req.headers.authorization.split(' ')[1];
-    await this.tokenBlacklistService.blacklistToken(token);
+    await this.tokenBlacklistService.markTokenAsExpired(token);
     return { message: 'Deconnexion avec succes !' };
   }
 } 

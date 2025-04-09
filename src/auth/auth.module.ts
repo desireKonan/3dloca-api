@@ -6,8 +6,9 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
-import { TokenBlacklistService } from './token-blacklist.service';
+import { AccessTokenService } from './token-blacklist.service';
 import { PrismaModule } from '../prisma/prisma.module';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { PrismaModule } from '../prisma/prisma.module';
     PrismaModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, TokenBlacklistService],
-  exports: [AuthService, TokenBlacklistService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtAuthGuard, AccessTokenService],
+  exports: [AuthService, AccessTokenService, JwtAuthGuard],
 })
 export class AuthModule {} 
