@@ -240,7 +240,7 @@ export class AnnouncementsService {
     limit: number = 15,
   ) {
     const skip = (page - 1) * limit;
-    const where = this.buildSearchWhereClause(searchDto);
+    const where = this.buildSearchWhereClause(searchDto) as any;
 
     const [annonces, total] = await Promise.all([
       this.prisma.announcement.findMany({
