@@ -23,7 +23,7 @@ export class AnnouncementsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() createAnnouncementDto: CreateAnnouncementDto, @GetUser() user: User) {
+  create(@Body() createAnnouncementDto: CreateAnnouncementDto, @GetUser() user: any) {
     return this.announcementsService.create(createAnnouncementDto, user.id);
   }
 

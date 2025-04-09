@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AccessTokenService } from './token-blacklist.service';
+import { AccessTokenService } from './access-token.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')

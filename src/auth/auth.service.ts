@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import { AccessTokenService } from './token-blacklist.service';
+import { AccessTokenService } from './access-token.service';
 
 @Injectable()
 export class AuthService {

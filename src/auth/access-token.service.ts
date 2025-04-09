@@ -34,7 +34,12 @@ export class AccessTokenService {
 
   async tokenExists(token: string): Promise<boolean> {
     const accessToken = await this.prisma.accessToken.findUnique({
-      where: { token },
+      where: { 
+        token, 
+        expiresAt: {
+          equals: null
+        } 
+      },
     });
 
     return !!accessToken;
@@ -52,7 +57,12 @@ export class AccessTokenService {
 
   async getUserByToken(token: string): Promise<User | undefined> {
     const accessToken = await this.prisma.accessToken.findUnique({
-      where: { token },
+      where: { 
+        token, 
+        expiresAt: {
+          equals: null
+        } 
+      },
       include: {
         user: true,
       },

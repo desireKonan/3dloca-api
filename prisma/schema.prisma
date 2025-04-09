@@ -56,5 +56,5 @@ model AccessToken {
 
   @@index([expiresAt])
 
-  @@map("black_listed_tokens")
+  @@map("access_tokens")
 }
