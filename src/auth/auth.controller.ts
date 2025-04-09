@@ -1,6 +1,5 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
 import { TokenBlacklistService } from './token-blacklist.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
@@ -8,7 +7,6 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private usersService: UsersService,
     private tokenBlacklistService: TokenBlacklistService,
   ) {}
 
@@ -18,6 +16,7 @@ export class AuthController {
     if (!user) {
       throw new Error('Les identifiants sont incorrectes !');
     }
+
     return this.authService.login(user);
   }
 
