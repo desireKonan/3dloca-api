@@ -22,7 +22,7 @@ export class AnnouncementsService {
     const [annonces, total] = await Promise.all([
       this.prisma.announcement.findMany({
         skip,
-        take: limit,
+        take: +limit,
         include: {
           user: {
             select: {
@@ -163,7 +163,7 @@ export class AnnouncementsService {
       this.prisma.announcement.findMany({
         where: { isValidated: true },
         skip,
-        take: limit,
+        take: +limit,
         include: {
           user: {
             select: {
