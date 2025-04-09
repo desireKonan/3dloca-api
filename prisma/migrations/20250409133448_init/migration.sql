@@ -1,11 +1,11 @@
 /*
   Warnings:
 
-  - Added the required column `userId` to the `Annonce` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `userId` to the `Announcement` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
-ALTER TABLE "Annonce" ADD COLUMN     "userId" TEXT NOT NULL;
+ALTER TABLE "Announcement" ADD COLUMN     "userId" TEXT NOT NULL;
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -23,4 +23,4 @@ CREATE TABLE "User" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
-ALTER TABLE "Annonce" ADD CONSTRAINT "Annonce_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Announcement" ADD CONSTRAINT "Annonce_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

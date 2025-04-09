@@ -19,12 +19,14 @@ model User {
   email     String    @unique
   password  String
   name      String?
-  annonces  Annonce[]
+  annonces  Announcement[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@map("users")
 }
 
-model Annonce {
+model Announcement {
   id          String   @id @default(uuid())
   title       String
   description String
@@ -37,6 +39,9 @@ model Annonce {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+
+  @@map("annonces")
+
 }
 
 model BlacklistedToken {
@@ -46,4 +51,6 @@ model BlacklistedToken {
   expiresAt DateTime
 
   @@index([expiresAt])
+
+  @@map("black_listed_tokens")
 }

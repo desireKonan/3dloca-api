@@ -16,7 +16,7 @@ export class AuthController {
   async login(@Body() body: { email: string; password: string }) {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new Error('Les identifiants sont incorrectes !');
     }
     return this.authService.login(user);
   }
@@ -26,6 +26,6 @@ export class AuthController {
   async logout(@Req() req: any) {
     const token = req.headers.authorization.split(' ')[1];
     await this.tokenBlacklistService.blacklistToken(token);
-    return { message: 'Logged out successfully' };
+    return { message: 'Deconnexion avec succes !' };
   }
 } 

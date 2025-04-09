@@ -126,7 +126,7 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.AnnonceScalarFieldEnum = {
+exports.Prisma.AnnouncementScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
@@ -165,7 +165,7 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Annonce: 'Annonce',
+  Announcement: 'Announcement',
   BlacklistedToken: 'BlacklistedToken'
 };
 

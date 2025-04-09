@@ -15,16 +15,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
+  id        String         @id @default(uuid())
+  email     String         @unique
   password  String
   name      String?
-  annonces  Annonce[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  annonces  Announcement[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@map("users")
 }
 
-model Annonce {
+model Announcement {
   id          String   @id @default(uuid())
   title       String
   description String
@@ -37,6 +39,8 @@ model Annonce {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+
+  @@map("annonces")
 }
 
 model BlacklistedToken {
@@ -46,4 +50,5 @@ model BlacklistedToken {
   expiresAt DateTime
 
   @@index([expiresAt])
+  @@map("black_listed_tokens")
 }

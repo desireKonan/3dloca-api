@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateAnnonceDto } from './dto/create-annonce.dto';
-import { UpdateAnnonceDto } from './dto/update-annonce.dto';
-import { SearchAnnonceDto } from './dto/search-annonce.dto';
+import { CreateAnnouncementDto } from './dto/create-announcement.dto';
+import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
+import { SearchAnnouncementDto } from './dto/search-announcement.dto';
 
 @Injectable()
-export class AnnoncesService {
+export class AnnouncementsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createAnnonceDto: CreateAnnonceDto, userId: string) {
-    return this.prisma.annonce.create({
+  async create(createAnnouncementDto: CreateAnnouncementDto, userId: string) {
+    return this.prisma.announcement.create({
       data: {
-        ...createAnnonceDto,
+        ...createAnnouncementDto,
         userId,
       },
       include: {
@@ -29,7 +29,7 @@ export class AnnoncesService {
   async findAll(page: number = 1, limit: number = 15) {
     const skip = (page - 1) * limit;
     const [annonces, total] = await Promise.all([
-      this.prisma.annonce.findMany({
+      this.prisma.announcement.findMany({
         skip,
         take: limit,
         include: {
@@ -45,7 +45,7 @@ export class AnnoncesService {
           createdAt: 'desc',
         },
       }),
-      this.prisma.annonce.count(),
+      this.prisma.announcement.count(),
     ]);
 
     return {
@@ -60,7 +60,7 @@ export class AnnoncesService {
   }
 
   async findOne(id: string) {
-    return this.prisma.annonce.findUnique({
+    return this.prisma.announcement.findUnique({
       where: { id },
       include: {
         user: {
@@ -74,18 +74,16 @@ export class AnnoncesService {
     });
   }
 
-  async update(id: string, updateAnnonceDto: UpdateAnnonceDto, userId: string) {
-    const annonce = await this.prisma.annonce.findUnique({
+  async update(id: string, updateAnnouncementDto: UpdateAnnouncementDto, userId: string) {
+    const announcement = await this.prisma.announcement.findUnique({
       where: { id },
     });
 
-    if (!annonce || annonce.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
+    this.isAuthorize(announcement, userId);
 
-    return this.prisma.annonce.update({
+    return this.prisma.announcement.update({
       where: { id },
-      data: updateAnnonceDto,
+      data: updateAnnouncementDto,
       include: {
         user: {
           select: {
@@ -99,51 +97,45 @@ export class AnnoncesService {
   }
 
   async remove(id: string, userId: string) {
-    const annonce = await this.prisma.annonce.findUnique({
+    const announcement = await this.prisma.announcement.findUnique({
       where: { id },
     });
 
-    if (!annonce || annonce.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
+    this.isAuthorize(announcement, userId);
 
-    return this.prisma.annonce.delete({
+    return this.prisma.announcement.delete({
       where: { id },
     });
   }
 
   async archive(id: string, userId: string) {
-    const annonce = await this.prisma.annonce.findUnique({
+    const announcement = await this.prisma.announcement.findUnique({
       where: { id },
     });
 
-    if (!annonce || annonce.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
+    this.isAuthorize(announcement, userId);
 
-    return this.prisma.annonce.update({
+    return this.prisma.announcement.update({
       where: { id },
       data: { isArchived: true },
     });
   }
 
   async unarchive(id: string, userId: string) {
-    const annonce = await this.prisma.annonce.findUnique({
+    const announcement = await this.prisma.announcement.findUnique({
       where: { id },
     });
 
-    if (!annonce || annonce.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
+    this.isAuthorize(announcement, userId);
 
-    return this.prisma.annonce.update({
+    return this.prisma.announcement.update({
       where: { id },
       data: { isArchived: false },
     });
   }
 
   async validate(id: string) {
-    return this.prisma.annonce.update({
+    return this.prisma.announcement.update({
       where: { id },
       data: { isValidated: true },
       include: {
@@ -159,7 +151,7 @@ export class AnnoncesService {
   }
 
   async invalidate(id: string) {
-    return this.prisma.annonce.update({
+    return this.prisma.announcement.update({
       where: { id },
       data: { isValidated: false },
       include: {
@@ -177,7 +169,7 @@ export class AnnoncesService {
   async findValidated(page: number = 1, limit: number = 15) {
     const skip = (page - 1) * limit;
     const [annonces, total] = await Promise.all([
-      this.prisma.annonce.findMany({
+      this.prisma.announcement.findMany({
         where: { isValidated: true },
         skip,
         take: limit,
@@ -194,7 +186,7 @@ export class AnnoncesService {
           createdAt: 'desc',
         },
       }),
-      this.prisma.annonce.count({ where: { isValidated: true } }),
+      this.prisma.announcement.count({ where: { isValidated: true } }),
     ]);
 
     return {
@@ -211,7 +203,7 @@ export class AnnoncesService {
   async findPending(page: number = 1, limit: number = 15) {
     const skip = (page - 1) * limit;
     const [annonces, total] = await Promise.all([
-      this.prisma.annonce.findMany({
+      this.prisma.announcement.findMany({
         where: { isValidated: false },
         skip,
         take: limit,
@@ -228,7 +220,7 @@ export class AnnoncesService {
           createdAt: 'desc',
         },
       }),
-      this.prisma.annonce.count({ where: { isValidated: false } }),
+      this.prisma.announcement.count({ where: { isValidated: false } }),
     ]);
 
     return {
@@ -243,7 +235,7 @@ export class AnnoncesService {
   }
 
   async search(
-    searchDto: SearchAnnonceDto,
+    searchDto: SearchAnnouncementDto,
     page: number = 1,
     limit: number = 15,
   ) {
@@ -251,7 +243,7 @@ export class AnnoncesService {
     const where = this.buildSearchWhereClause(searchDto);
 
     const [annonces, total] = await Promise.all([
-      this.prisma.annonce.findMany({
+      this.prisma.announcement.findMany({
         where,
         skip,
         take: limit,
@@ -268,7 +260,7 @@ export class AnnoncesService {
           createdAt: 'desc',
         },
       }),
-      this.prisma.annonce.count({ where }),
+      this.prisma.announcement.count({ where }),
     ]);
 
     return {
@@ -282,53 +274,47 @@ export class AnnoncesService {
     };
   }
 
-  private buildSearchWhereClause(searchDto: SearchAnnonceDto) {
-    const where: any = {
+  private buildSearchWhereClause(searchDto: SearchAnnouncementDto) {
+    return {
       isArchived: false,
       isValidated: true,
-    };
-
-    if (searchDto.location) {
-      where.location = {
+      ...(searchDto.location && {
         contains: searchDto.location,
         mode: 'insensitive',
-      };
-    }
-
-    if (searchDto.minPrice !== undefined || searchDto.maxPrice !== undefined) {
-      where.price = {};
-      if (searchDto.minPrice !== undefined) {
-        where.price.gte = searchDto.minPrice;
-      }
-      if (searchDto.maxPrice !== undefined) {
-        where.price.lte = searchDto.maxPrice;
-      }
-    }
-
-    if (searchDto.category) {
-      where.category = {
+      }),
+      ...((searchDto.minPrice !== undefined || searchDto.maxPrice !== undefined) && {
+        price: {
+          gte: searchDto.maxPrice || undefined,
+          lte: searchDto.minPrice || undefined
+        }
+      }),
+      ...(searchDto.category && {
         contains: searchDto.category,
         mode: 'insensitive',
-      };
-    }
-
-    if (searchDto.searchTerm) {
-      where.OR = [
-        {
-          title: {
-            contains: searchDto.searchTerm,
-            mode: 'insensitive',
+      }),
+      ...(searchDto.searchTerm && {
+        OR: [
+          {
+            title: {
+              contains: searchDto.searchTerm,
+              mode: 'insensitive',
+            },
           },
-        },
-        {
-          description: {
-            contains: searchDto.searchTerm,
-            mode: 'insensitive',
+          {
+            description: {
+              contains: searchDto.searchTerm,
+              mode: 'insensitive',
+            },
           },
-        },
-      ];
-    }
+        ]
+      })
+    };
+  }
 
-    return where;
+
+  private isAuthorize(announcement: any, userId: string) {
+    if (!announcement || announcement.userId !== userId) {
+      throw new Error('C\'est pas autorise');
+    }
   }
 } 

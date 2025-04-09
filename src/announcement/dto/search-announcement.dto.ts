@@ -1,6 +1,6 @@
-import { IsOptional, IsNumber, IsString, Min, Max } from 'class-validator';
+import { IsOptional, IsNumber, IsString, Min } from 'class-validator';
 
-export class SearchAnnonceDto {
+export class SearchAnnouncementDto {
   @IsOptional()
   @IsString()
   location?: string;

@@ -8,7 +8,7 @@ export class StatsService {
   async getTotalStats() {
     const [totalUsers, totalAnnonces] = await Promise.all([
       this.prisma.user.count(),
-      this.prisma.annonce.count(),
+      this.prisma.announcement.count(),
     ]);
 
     return {
@@ -22,7 +22,7 @@ export class StatsService {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
 
-    const annonces = await this.prisma.annonce.groupBy({
+    const annonces = await this.prisma.announcement.groupBy({
       by: ['createdAt'],
       where: {
         createdAt: {
@@ -36,9 +36,9 @@ export class StatsService {
     });
 
     // Group by month
-    const monthlyStats = annonces.reduce((acc, annonce) => {
-      const month = annonce.createdAt.toISOString().slice(0, 7); // YYYY-MM format
-      acc[month] = (acc[month] || 0) + annonce._count;
+    const monthlyStats = annonces.reduce((acc, announcement) => {
+      const month = announcement.createdAt.toISOString().slice(0, 7); // YYYY-MM format
+      acc[month] = (acc[month] || 0) + announcement._count;
       return acc;
     }, {});
 
@@ -50,7 +50,7 @@ export class StatsService {
     const fourWeeksAgo = new Date();
     fourWeeksAgo.setDate(currentDate.getDate() - 28);
 
-    const annonces = await this.prisma.annonce.groupBy({
+    const annonces = await this.prisma.announcement.groupBy({
       by: ['createdAt'],
       where: {
         createdAt: {
@@ -64,9 +64,9 @@ export class StatsService {
     });
 
     // Group by week
-    const weeklyStats = annonces.reduce((acc, annonce) => {
-      const week = this.getWeekNumber(annonce.createdAt);
-      acc[week] = (acc[week] || 0) + annonce._count;
+    const weeklyStats = annonces.reduce((acc, announcement) => {
+      const week = this.getWeekNumber(announcement.createdAt);
+      acc[week] = (acc[week] || 0) + announcement._count;
       return acc;
     }, {});
 
@@ -78,7 +78,7 @@ export class StatsService {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(currentDate.getDate() - 7);
 
-    const annonces = await this.prisma.annonce.groupBy({
+    const annonces = await this.prisma.announcement.groupBy({
       by: ['createdAt'],
       where: {
         createdAt: {
@@ -92,9 +92,9 @@ export class StatsService {
     });
 
     // Group by day
-    const dailyStats = annonces.reduce((acc, annonce) => {
-      const day = annonce.createdAt.toISOString().slice(0, 10); // YYYY-MM-DD format
-      acc[day] = (acc[day] || 0) + annonce._count;
+    const dailyStats = annonces.reduce((acc, announcement) => {
+      const day = announcement.createdAt.toISOString().slice(0, 10); // YYYY-MM-DD format
+      acc[day] = (acc[day] || 0) + announcement._count;
       return acc;
     }, {});
 
