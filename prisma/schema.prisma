@@ -38,3 +38,12 @@ model Annonce {
   userId      String
   user        User     @relation(fields: [userId], references: [id])
 }
+
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

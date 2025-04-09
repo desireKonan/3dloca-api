@@ -1,12 +1,15 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
+import { TokenBlacklistService } from './token-blacklist.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
+    private tokenBlacklistService: TokenBlacklistService,
   ) {}
 
   @Post('login')
@@ -16,5 +19,13 @@ export class AuthController {
       throw new Error('Invalid credentials');
     }
     return this.authService.login(user);
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() req: any) {
+    const token = req.headers.authorization.split(' ')[1];
+    await this.tokenBlacklistService.blacklistToken(token);
+    return { message: 'Logged out successfully' };
   }
 } 

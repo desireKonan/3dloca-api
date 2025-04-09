@@ -140,6 +140,13 @@ exports.Prisma.AnnonceScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.BlacklistedTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -158,7 +165,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Annonce: 'Annonce'
+  Annonce: 'Annonce',
+  BlacklistedToken: 'BlacklistedToken'
 };
 
 /**
