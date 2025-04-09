@@ -15,6 +15,7 @@ import { UpdateAnnonceDto } from './dto/update-annonce.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '@prisma/client';
+import { SearchAnnonceDto } from './dto/search-annonce.dto';
 
 @Controller('annonces')
 export class AnnoncesController {
@@ -94,5 +95,14 @@ export class AnnoncesController {
   @UseGuards(JwtAuthGuard)
   invalidate(@Param('id') id: string) {
     return this.annoncesService.invalidate(id);
+  }
+
+  @Get('search')
+  async search(
+    @Query() searchDto: SearchAnnonceDto,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 15,
+  ) {
+    return this.annoncesService.search(searchDto, page, limit);
   }
 } 

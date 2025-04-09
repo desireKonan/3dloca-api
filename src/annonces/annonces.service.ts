@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAnnonceDto } from './dto/create-annonce.dto';
 import { UpdateAnnonceDto } from './dto/update-annonce.dto';
+import { SearchAnnonceDto } from './dto/search-annonce.dto';
 
 @Injectable()
 export class AnnoncesService {
@@ -239,5 +240,95 @@ export class AnnoncesService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async search(
+    searchDto: SearchAnnonceDto,
+    page: number = 1,
+    limit: number = 15,
+  ) {
+    const skip = (page - 1) * limit;
+    const where = this.buildSearchWhereClause(searchDto);
+
+    const [annonces, total] = await Promise.all([
+      this.prisma.annonce.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.annonce.count({ where }),
+    ]);
+
+    return {
+      data: annonces,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  private buildSearchWhereClause(searchDto: SearchAnnonceDto) {
+    const where: any = {
+      isArchived: false,
+      isValidated: true,
+    };
+
+    if (searchDto.location) {
+      where.location = {
+        contains: searchDto.location,
+        mode: 'insensitive',
+      };
+    }
+
+    if (searchDto.minPrice !== undefined || searchDto.maxPrice !== undefined) {
+      where.price = {};
+      if (searchDto.minPrice !== undefined) {
+        where.price.gte = searchDto.minPrice;
+      }
+      if (searchDto.maxPrice !== undefined) {
+        where.price.lte = searchDto.maxPrice;
+      }
+    }
+
+    if (searchDto.category) {
+      where.category = {
+        contains: searchDto.category,
+        mode: 'insensitive',
+      };
+    }
+
+    if (searchDto.searchTerm) {
+      where.OR = [
+        {
+          title: {
+            contains: searchDto.searchTerm,
+            mode: 'insensitive',
+          },
+        },
+        {
+          description: {
+            contains: searchDto.searchTerm,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    return where;
   }
 } 
