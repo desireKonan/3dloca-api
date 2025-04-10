@@ -1,8 +1,8 @@
 {
   "name": "3dloca",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "3DLoca API",
+  "author": "HKD and Sminth",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
