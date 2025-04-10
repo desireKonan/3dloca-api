@@ -197,7 +197,7 @@ export class AnnouncementsService {
       this.prisma.announcement.findMany({
         where: { isValidated: false },
         skip,
-        take: limit,
+        take: +limit,
         include: {
           user: {
             select: {
@@ -237,7 +237,7 @@ export class AnnouncementsService {
       this.prisma.announcement.findMany({
         where,
         skip,
-        take: limit,
+        take: +limit,
         include: {
           user: {
             select: {

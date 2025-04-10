@@ -25,10 +25,8 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
 
     const access_token = this.jwtService.sign(payload);
-
     const tokenCreated = await this.accessToken.create(access_token, user.id);
     console.log("token created ========>>>", tokenCreated);
-
     return {
       access_token
     };

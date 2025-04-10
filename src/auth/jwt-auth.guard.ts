@@ -17,7 +17,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const isAccessToken = await this.accessTokenService.tokenExists(token);
-    
     if (!isAccessToken) {
       return false;
     }
@@ -30,9 +29,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       email: user?.email,
       name: user?.name
     };
-    
-    
-    
     return super.canActivate(context) as Promise<boolean>;
   }
 
