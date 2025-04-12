@@ -32,7 +32,7 @@ COPY --from=builder /usr/src/app/dist ./dist
 
 # Variables d'environnement
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=3500
 
 # Exposer le port
 EXPOSE ${PORT}
