@@ -19,26 +19,16 @@ RUN npm run build
 
 RUN npm rebuild bcrypt --build-from-source
 
-#For prod
 FROM node:20-alpine
 
-RUN apk add --no-cache tzdata && \
-    addgroup -g 1001 -S nodejs && \
-    adduser -u 1001 -S nodejs -G nodejs
-
-# Définir le répertoire de travail
 WORKDIR /usr/src/app
 
 # Installer les dépendances de production seulement
 COPY --from=builder /usr/src/app/package*.json ./
-RUN npm ci --only=production && \
-    npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
 
 # Copier les fichiers construits depuis l'étape builder
 COPY --from=builder /usr/src/app/dist ./dist
-
-# Définir l'utilisateur
-USER nodejs
 
 # Variables d'environnement
 ENV NODE_ENV=production
